@@ -1,0 +1,29 @@
+{
+  "name": "todoodle-app",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "bun run --parallel --filter '*' dev",
+    "dev:web": "bun run --filter @todoodle-app/web dev",
+    "dev:api": "bun run --filter @todoodle-app/api dev",
+    "build": "bun run --filter '*' build",
+    "typecheck": "bun run --filter '*' typecheck",
+    "db:generate": "bun run --filter @todoodle-app/api db:generate",
+    "db:migrate": "bun run --filter @todoodle-app/api db:migrate",
+    "db:push": "bun run --filter @todoodle-app/api db:push",
+    "db:studio": "bun run --filter @todoodle-app/api db:studio",
+    "format": "bun run biome format .",
+    "format:fix": "bun run biome format --write .",
+    "lint": "bun run biome lint .",
+    "lint:fix": "bun run biome lint --write .",
+    "check": "bun run biome check .",
+    "check:fix": "bun run biome check --write ."
+  },
+  "workspaces": [
+    "apps/*"
+  ],
+  "devDependencies": {
+    "@biomejs/biome": "2.5.2"
+  }
+}

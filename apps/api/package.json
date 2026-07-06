@@ -1,0 +1,30 @@
+{
+  "name": "@todoodle-app/api",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "bun --watch src/server.ts",
+    "build": "bun build src/server.ts --target bun --outdir ./dist",
+    "start": "bun dist/server.js",
+    "typecheck": "tsc --noEmit",
+    "db:push": "bun --bun drizzle-kit push",
+    "db:generate": "bun --bun drizzle-kit generate",
+    "db:migrate": "bun --bun drizzle-kit migrate",
+    "db:studio": "bun --bun drizzle-kit studio"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/pg": "^8.20.0",
+    "drizzle-kit": "^1.0.0-rc.4"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "drizzle-orm": "^1.0.0-rc.4",
+    "elysia": "^1.4.29",
+    "pg": "^8.22.0",
+    "zod": "^4.4.3"
+  }
+}
