@@ -16,6 +16,7 @@ export type ITaskRepository = {
   create(data: CreateTaskInput): Promise<Task>
   update(id: string, data: UpdateTaskInput): Promise<Task | null>
   delete(id: string): Promise<boolean>
+  reset(): Promise<boolean>
 }
 
 export class TaskRepository implements ITaskRepository {
@@ -50,7 +51,10 @@ export class TaskRepository implements ITaskRepository {
   }
 
   async findById(id: string): Promise<Task | null> {
-    const [task] = await this.database.select().from(tasksTable).where(eq(tasksTable.id, id))
+    const [task] = await this.database
+      .select()
+      .from(tasksTable)
+      .where(eq(tasksTable.id, id))
 
     return task ?? null
   }
@@ -58,7 +62,7 @@ export class TaskRepository implements ITaskRepository {
   async create(data: CreateTaskInput): Promise<Task> {
     const [task] = await this.database.insert(tasksTable).values(data).returning()
 
-    if (!task) throw new DatabaseError(`Database error: Failed to create user record`)
+    if (!task) throw new DatabaseError(`Database error: Failed to create task record`)
 
     return task
   }
@@ -78,6 +82,12 @@ export class TaskRepository implements ITaskRepository {
       .delete(tasksTable)
       .where(eq(tasksTable.id, id))
       .returning({ id: tasksTable.id })
+
+    return result.length > 0
+  }
+
+  async reset(): Promise<boolean> {
+    const result = await this.database.delete(tasksTable).returning()
 
     return result.length > 0
   }
