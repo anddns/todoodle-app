@@ -1,11 +1,17 @@
 import { beforeEach, describe, expect, test } from 'bun:test'
 import Elysia from 'elysia'
 
-import { createTestTaskModule } from '@/api/modules/tasks/task.factory'
+import { TaskController } from '@/api/modules/tasks/task.controller'
+import { FakeTaskRepository } from '@/api/modules/tasks/task.repository.spec'
+import { createTaskRoutes } from '@/api/modules/tasks/task.routes'
 import type { Task } from '@/api/modules/tasks/task.schemas'
+import { TaskService } from '@/api/modules/tasks/task.service'
 import { globalErrorHandler } from '@/api/shared/errors/global-error-handler'
 
-const { routes, repository } = createTestTaskModule()
+const repository = new FakeTaskRepository()
+const service = new TaskService(repository)
+const controller = new TaskController(service)
+const routes = createTaskRoutes(controller)
 
 const app = new Elysia().use(globalErrorHandler).use(routes)
 
