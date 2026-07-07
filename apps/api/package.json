@@ -4,9 +4,9 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "bun --watch src/server.ts",
-    "test": "bun test --env-file=.env.test",
-    "build": "bun build src/server.ts --target bun --outdir ./dist",
+    "dev": "bun --env-file=.env.development.local --watch src/server.ts",
+    "test": "bun --env-file=.env.test.local test",
+    "build": "bun --env-file=.env.production.local build src/server.ts --target bun --outdir ./dist",
     "start": "bun dist/server.js",
     "typecheck": "tsc --noEmit",
     "db:push": "bun --bun drizzle-kit push",
