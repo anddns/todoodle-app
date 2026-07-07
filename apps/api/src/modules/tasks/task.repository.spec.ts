@@ -67,7 +67,7 @@ export class FakeTaskRepository implements ITaskRepository {
   async reset(): Promise<boolean> {
     this.tasks.length = 0
 
-    return this.tasks.length > 0
+    return true
   }
 }
 
@@ -93,11 +93,13 @@ describe('TaskService', () => {
   test('update altera campos de uma tarefa existente', async () => {
     const service = new TaskService(new FakeTaskRepository())
 
-    const created = await service.create({ title: 'Vai ser apagada' })
+    const created = await service.create({ title: 'Atualizar tarefa' })
 
-    await service.delete(created.id)
+    const updated = await service.update(created.id, {
+      title: 'Tarefa atualizada',
+    })
 
-    expect(service.getById(created.id)).rejects.toThrow(NotFoundError)
+    expect(updated.title).toBe('Tarefa atualizada')
   })
 
   test('delete lança NotFoundError para id inexistente', async () => {
