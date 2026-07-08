@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "type": "module",
   "private": true,
+  "exports": {
+    ".": "./src/app.ts"
+  },
   "scripts": {
     "dev": "bun --env-file=.env.development.local --watch src/server.ts",
     "test": "bun --env-file=.env.test.local test",
@@ -25,7 +28,7 @@
   "dependencies": {
     "@elysiajs/cors": "^1.4.2",
     "drizzle-orm": "^1.0.0-rc.4",
-    "elysia": "^1.4.29",
+    "elysia": "catalog:",
     "pg": "^8.22.0",
     "zod": "^4.4.3"
   }
