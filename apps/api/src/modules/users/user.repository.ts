@@ -17,6 +17,7 @@ export type IUserRepository = {
   create(data: CreateUserInput): Promise<User>
   update(id: string, data: UpdateUserInput): Promise<User | null>
   delete(id: string): Promise<boolean>
+  reset(): Promise<boolean>
 }
 
 export class UserRepository implements IUserRepository {
@@ -58,13 +59,19 @@ export class UserRepository implements IUserRepository {
   }
 
   async findById(id: string): Promise<User | null> {
-    const [user] = await this.database.select().from(usersTable).where(eq(usersTable.id, id))
+    const [user] = await this.database
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.id, id))
 
     return user ?? null
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    const [user] = await this.database.select().from(usersTable).where(eq(usersTable.email, email))
+    const [user] = await this.database
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.email, email))
 
     return user ?? null
   }
@@ -78,40 +85,26 @@ export class UserRepository implements IUserRepository {
   }
 
   async update(id: string, data: UpdateUserInput): Promise<User | null> {
-    const [result] = await this.database
+    const [user] = await this.database
       .update(usersTable)
       .set(data)
       .where(eq(usersTable.id, id))
       .returning()
 
-    return result ?? null
+    return user ?? null
   }
-
-  // async updatePassword(id: string, hashedPassword: string): Promise<User | null> {
-  //   const [result] = await this.database
-  //     .update(usersTable)
-  //     .set({ password: hashedPassword })
-  //     .where(eq(usersTable.id, id))
-  //     .returning()
-
-  //   return result ?? null
-  // }
-
-  // async markAsVerified(id: string): Promise<User | null> {
-  //   const [result] = await this.database
-  //     .update(usersTable)
-  //     .set({ verifiedAt: new Date().toISOString() })
-  //     .where(eq(usersTable.id, id))
-  //     .returning()
-
-  //   return result ?? null
-  // }
 
   async delete(id: string): Promise<boolean> {
     const result = await this.database
       .delete(usersTable)
       .where(eq(usersTable.id, id))
       .returning({ id: usersTable.id })
+
+    return result.length > 0
+  }
+
+  async reset(): Promise<boolean> {
+    const result = await this.database.delete(usersTable).returning()
 
     return result.length > 0
   }
