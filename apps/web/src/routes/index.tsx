@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
-
 import { eden } from '@/web/lib/eden'
+import { Button } from '../components/ui/button'
 
 export const Route = createFileRoute('/')({
   component: Index,
@@ -32,7 +32,8 @@ function Index() {
 
   return (
     <div>
-      <h1>Todoodle</h1>
+      <h1 className="mb-4 font-bold text-blue-600 text-3xl">Todoodle</h1>
+      <Button onClick={() => alert('shadcn/ui works!')}>Click me</Button>
       <p>{data.total} task(s)</p>
       <ul>
         {data.data.map((task) => (
