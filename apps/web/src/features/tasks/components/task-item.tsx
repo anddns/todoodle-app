@@ -12,8 +12,8 @@ interface TaskItemProps {
 }
 
 export function TaskItem({ task }: TaskItemProps) {
-  const { mutate: toggleTask, isPending: isPendingToggle } = useToggleTask()
-  const { mutate: deleteTask, isPending: isPendingDeletion } = useDeleteTask()
+  const { mutate: toggleTask, isError: isErrorToggle, isPending: isPendingToggle } = useToggleTask()
+  const { mutate: deleteTask, isError: isErrorDelete, isPending: isPendingDeletion } = useDeleteTask()
 
   const isCompleted = !!task.completedAt
 
@@ -26,7 +26,7 @@ export function TaskItem({ task }: TaskItemProps) {
   }
 
   return (
-    <li key={task.id}>
+    <li>
       <Card>
         <CardContent className="flex items-center gap-3 p-4">
           <Checkbox
