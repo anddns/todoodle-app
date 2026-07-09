@@ -23,8 +23,6 @@ export function TaskForm() {
   }
 
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    event.preventDefault()
-
     setTitle(event.target.value)
   }
 
