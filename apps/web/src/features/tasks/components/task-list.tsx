@@ -9,7 +9,7 @@ export function TaskList() {
   }
 
   if (isError) {
-    return <p className="text-destructive">Failed to load tasks: ${error.message}</p>
+    return <p className="text-destructive">Failed to load tasks: `${error.message}`</p>
   }
 
   if (!tasks || tasks.data.length === 0) {
