@@ -5,7 +5,9 @@ import type { tasksTable } from '@/api/shared/database/schema/tasks.table'
 export const taskSchema = z.object({
   id: z.uuidv7(),
   title: z.string().min(1),
-  description: z.string().nullable(),
+  description: z.string().optional(),
+  dueOn: z.iso.datetime().optional(),
+  dueAt: z.iso.datetime().optional(),
   completedAt: z.iso.datetime().nullable(),
   updatedAt: z.iso.datetime(),
   createdAt: z.iso.datetime(),
@@ -26,14 +28,18 @@ export const listTasksQuerySchema = z.object({
 export const createTaskSchema = z.object({
   title: z.string().min(1),
   description: z.string().optional(),
+  dueOn: z.iso.datetime().optional(),
+  dueAt: z.iso.datetime().optional(),
   completedAt: z.iso.datetime().optional(),
 })
 
 export const updateTaskSchema = z
   .object({
     title: z.string().min(1).optional(),
-    description: z.string().nullable().optional(),
-    completedAt: z.iso.datetime().nullable().optional(),
+    description: z.string().optional(),
+    dueOn: z.iso.datetime().optional(),
+    dueAt: z.iso.datetime().optional(),
+    completedAt: z.iso.datetime().optional(),
   })
   .refine((data) => Object.values(data).some((value) => value !== undefined), {
     error: 'At least one of the properties must be provided.',

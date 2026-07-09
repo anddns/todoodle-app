@@ -34,6 +34,8 @@ export class FakeTaskRepository implements ITaskRepository {
       id: Bun.randomUUIDv7(),
       title: data.title,
       description: data.description ?? null,
+      dueOn: data.dueOn ?? null,
+      dueAt: data.dueAt ?? null,
       completedAt: data.completedAt ?? null,
       updatedAt: new Date().toISOString(),
       createdAt: new Date().toISOString(),
