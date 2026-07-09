@@ -12,6 +12,8 @@ CREATE TABLE "tasks" (
 	"id" uuid PRIMARY KEY DEFAULT uuidv7(),
 	"title" text NOT NULL,
 	"description" text,
+	"due_on" date,
+	"due_at" timestamp with time zone,
 	"completed_at" timestamp with time zone,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL
