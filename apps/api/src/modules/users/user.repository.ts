@@ -59,19 +59,13 @@ export class UserRepository implements IUserRepository {
   }
 
   async findById(id: string): Promise<User | null> {
-    const [user] = await this.database
-      .select()
-      .from(usersTable)
-      .where(eq(usersTable.id, id))
+    const [user] = await this.database.select().from(usersTable).where(eq(usersTable.id, id))
 
     return user ?? null
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    const [user] = await this.database
-      .select()
-      .from(usersTable)
-      .where(eq(usersTable.email, email))
+    const [user] = await this.database.select().from(usersTable).where(eq(usersTable.email, email))
 
     return user ?? null
   }

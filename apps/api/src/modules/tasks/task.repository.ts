@@ -51,10 +51,7 @@ export class TaskRepository implements ITaskRepository {
   }
 
   async findById(id: string): Promise<Task | null> {
-    const [task] = await this.database
-      .select()
-      .from(tasksTable)
-      .where(eq(tasksTable.id, id))
+    const [task] = await this.database.select().from(tasksTable).where(eq(tasksTable.id, id))
 
     return task ?? null
   }
