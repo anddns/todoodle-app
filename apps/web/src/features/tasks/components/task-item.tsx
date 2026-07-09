@@ -12,8 +12,18 @@ interface TaskItemProps {
 }
 
 export function TaskItem({ task }: TaskItemProps) {
-  const { mutate: toggleTask, isError: isErrorToggle, isPending: isPendingToggle } = useToggleTask()
-  const { mutate: deleteTask, isError: isErrorDelete, isPending: isPendingDeletion } = useDeleteTask()
+  const {
+    mutate: toggleTask,
+    isPending: isToggling,
+    isError: toggleError,
+    error: toggleErrorObj,
+  } = useToggleTask()
+  const {
+    mutate: deleteTask,
+    isPending: isDeleting,
+    isError: deleteError,
+    error: deleteErrorObj,
+  } = useDeleteTask()
 
   const isCompleted = !!task.completedAt
 
@@ -32,7 +42,7 @@ export function TaskItem({ task }: TaskItemProps) {
           <Checkbox
             checked={isCompleted}
             onCheckedChange={() => handleToggle(task)}
-            disabled={isPendingToggle}
+            disabled={isToggling}
             aria-label={`Mark "${task.title}" as ${isCompleted ? 'incomplete' : 'completed'}`}
           />
           <span
@@ -44,10 +54,21 @@ export function TaskItem({ task }: TaskItemProps) {
             variant="ghost"
             size="icon"
             onClick={() => handleDelete(task.id)}
-            disabled={isPendingDeletion}
+            disabled={isDeleting}
           >
             <TrashIcon className="w-4 h-4" />
           </Button>
+
+          {deleteError && (
+            <p className="mt-1 text-destructive text-xs">
+              Failed to delete: {deleteErrorObj?.message}
+            </p>
+          )}
+          {toggleError && (
+            <p className="mt-1 text-destructive text-xs">
+              Failed to update: {toggleErrorObj?.message}
+            </p>
+          )}
         </CardContent>
       </Card>
     </li>
