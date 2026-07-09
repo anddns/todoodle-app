@@ -3,11 +3,10 @@ import { createFileRoute } from '@tanstack/react-router'
 import { tasksQueryOptions } from '../features/tasks'
 import { TaskForm } from '../features/tasks/components/task-form'
 import { TaskList } from '../features/tasks/components/task-list'
-import { queryClient } from '../lib/query-client'
 
 export const Route = createFileRoute('/')({
-  loader: () => {
-    return queryClient.ensureQueryData(tasksQueryOptions())
+  loader: ({ context }) => {
+    return context.queryClient.ensureQueryData(tasksQueryOptions())
   },
   component: RouteComponent,
 })
