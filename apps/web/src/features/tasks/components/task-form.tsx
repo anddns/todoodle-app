@@ -5,7 +5,7 @@ import { useCreateTask } from '../hooks/use-create-task'
 
 export function TaskForm() {
   const [title, setTitle] = useState('')
-  const { mutate: createTask, isPending } = useCreateTask()
+  const { mutate: createTask, isPending: isCreating } = useCreateTask()
 
   const handleOnSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -33,11 +33,11 @@ export function TaskForm() {
         placeholder="What needs to be done?"
         value={title}
         onChange={handleOnChange}
-        disabled={isPending}
+        disabled={isCreating}
         className="flex-1"
       />
-      <Button type="submit" disabled={isPending}>
-        {isPending ? 'Adding...' : 'Add'}
+      <Button type="submit" disabled={isCreating}>
+        {isCreating ? 'Adding...' : 'Add'}
       </Button>
     </form>
   )
