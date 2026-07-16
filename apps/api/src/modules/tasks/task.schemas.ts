@@ -35,11 +35,11 @@ export const createTaskSchema = z.object({
 
 export const updateTaskSchema = z
   .object({
-    title: z.string().min(1).optional(),
-    description: z.string().optional(),
-    dueOn: z.iso.datetime().optional(),
-    dueAt: z.iso.datetime().optional(),
-    completedAt: z.iso.datetime().optional(),
+    title: z.string().optional(),
+    description: z.string().optional().nullable(),
+    dueOn: z.iso.date().optional().nullable(),
+    dueAt: z.iso.datetime().optional().nullable(),
+    completedAt: z.iso.datetime().optional().nullable(),
   })
   .refine((data) => Object.values(data).some((value) => value !== undefined), {
     error: 'At least one of the properties must be provided.',
