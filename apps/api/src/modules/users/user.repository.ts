@@ -1,14 +1,9 @@
+import type { CreateUserInput, UpdateUserInput } from '@todoodle-app/shared'
 import { asc, count, desc, eq, isNotNull, isNull } from 'drizzle-orm'
-
-import type {
-  CreateUserInput,
-  ListUsersQuery,
-  UpdateUserInput,
-  User,
-} from '@/api/modules/users/user.schemas'
 import type { DrizzleDatabase } from '@/api/shared/database'
 import { usersTable } from '@/api/shared/database/schema/users.table'
 import { DatabaseError } from '@/api/shared/errors/infrastructure-error'
+import type { ListUsersQuery, User } from './user.schemas'
 
 export type IUserRepository = {
   findAll(query: ListUsersQuery): Promise<{ data: User[]; total: number }>

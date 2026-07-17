@@ -1,4 +1,5 @@
-import type { PublicUser, User } from '@/api/modules/users/user.schemas'
+import type { PublicUser } from '@todoodle-app/shared'
+import type { User } from './user.schemas'
 
 export function toPublicUser(user: User): PublicUser {
   const { password, verifiedAt, ...rest } = user

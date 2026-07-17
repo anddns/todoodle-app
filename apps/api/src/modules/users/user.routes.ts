@@ -1,12 +1,7 @@
+import { createUserSchema, updateUserSchema } from '@todoodle-app/shared'
 import Elysia from 'elysia'
-
 import type { IUserController } from '@/api/modules/users/user.controller'
-import {
-  createUserSchema,
-  listUsersQuerySchema,
-  updateUserSchema,
-  userParamsSchema,
-} from '@/api/modules/users/user.schemas'
+import { listUsersQuerySchema, userParamsSchema } from './user.schemas'
 
 export function createUserRoutes(controller: IUserController) {
   return new Elysia({ prefix: '/users' })

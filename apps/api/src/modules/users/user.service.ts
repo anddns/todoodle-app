@@ -1,12 +1,8 @@
+import type { CreateUserInput, UpdateUserInput } from '@todoodle-app/shared'
 import type { IUserRepository } from '@/api/modules/users/user.repository'
-import type {
-  CreateUserInput,
-  ListUsersQuery,
-  UpdateUserInput,
-  User,
-} from '@/api/modules/users/user.schemas'
 import { ConflictError, NotFoundError } from '@/api/shared/errors/app-error'
 import { hashPassword } from '@/api/shared/security/password-hasher'
+import type { ListUsersQuery, User } from './user.schemas'
 
 export interface IUserService {
   list(query: ListUsersQuery): Promise<{ data: User[]; total: number }>

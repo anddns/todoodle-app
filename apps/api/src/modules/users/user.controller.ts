@@ -1,11 +1,7 @@
-import type {
-  CreateUserInput,
-  ListUsersQuery,
-  PublicUser,
-  UpdateUserInput,
-} from '@/api/modules/users/user.schemas'
+import type { CreateUserInput, PublicUser, UpdateUserInput } from '@todoodle-app/shared'
 import type { IUserService } from '@/api/modules/users/user.service'
 import { toPublicUser } from './user.mapper'
+import type { ListUsersQuery } from './user.schemas'
 
 export interface IUserController {
   list(query: ListUsersQuery): Promise<{ data: PublicUser[]; total: number }>
