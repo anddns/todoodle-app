@@ -8,7 +8,7 @@ export const tasksTable = snakeCase.table('tasks', {
   id: uuid('id').primaryKey().default(sql`uuidv7()`),
   title: text('title').notNull(),
   description: text('description'),
-  priority: priorityEnum('priority').notNull().default('p4'),
+  priority: priorityEnum('priority').default('p4'),
   dueOn: date('due_on', { mode: 'string' }),
   dueAt: timestamp('due_at', { mode: 'string', withTimezone: true }),
   completedAt: timestamp('completed_at', { mode: 'string', withTimezone: true }),
