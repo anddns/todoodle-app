@@ -1,11 +1,7 @@
+import type { CreateTaskInput, UpdateTaskInput } from '@todoodle-app/shared'
 import { asc, count, desc, eq, isNotNull, isNull } from 'drizzle-orm'
 
-import type {
-  CreateTaskInput,
-  ListTasksQuery,
-  Task,
-  UpdateTaskInput,
-} from '@/api/modules/tasks/task.schemas'
+import type { ListTasksQuery, Task } from '@/api/modules/tasks/task.schemas'
 import type { DrizzleDatabase } from '@/api/shared/database'
 import { tasksTable } from '@/api/shared/database/schema/tasks.table'
 import { DatabaseError } from '@/api/shared/errors/infrastructure-error'

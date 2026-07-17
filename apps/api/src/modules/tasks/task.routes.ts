@@ -1,12 +1,8 @@
+import { createTaskSchema, updateTaskSchema } from '@todoodle-app/shared'
 import Elysia from 'elysia'
 
 import type { ITaskController } from '@/api/modules/tasks/task.controller'
-import {
-  createTaskSchema,
-  listTasksQuerySchema,
-  taskParamsSchema,
-  updateTaskSchema,
-} from '@/api/modules/tasks/task.schemas'
+import { listTasksQuerySchema, taskParamsSchema } from '@/api/modules/tasks/task.schemas'
 
 export function createTaskRoutes(controller: ITaskController) {
   return new Elysia({ prefix: '/tasks' })

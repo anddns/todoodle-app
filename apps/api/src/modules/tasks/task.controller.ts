@@ -1,9 +1,6 @@
-import type {
-  CreateTaskInput,
-  ListTasksQuery,
-  Task,
-  UpdateTaskInput,
-} from '@/api/modules/tasks/task.schemas'
+import type { CreateTaskInput, UpdateTaskInput } from '@todoodle-app/shared'
+
+import type { ListTasksQuery, Task } from '@/api/modules/tasks/task.schemas'
 import type { ITaskService } from '@/api/modules/tasks/task.service'
 
 export interface ITaskController {
