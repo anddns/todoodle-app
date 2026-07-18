@@ -4,7 +4,7 @@ import type { ListTasksQuery, Task } from '@/api/modules/tasks/task.schemas'
 import type { ITaskService } from '@/api/modules/tasks/task.service'
 
 export interface ITaskController {
-  list(query: ListTasksQuery): Promise<{ data: Task[]; total: number }>
+  list(query: ListTasksQuery): Promise<{ tasks: Task[]; total: number }>
   getById(id: string): Promise<Task>
   create(data: CreateTaskInput): Promise<Task>
   update(id: string, data: UpdateTaskInput): Promise<Task>
@@ -14,7 +14,7 @@ export interface ITaskController {
 export class TaskController implements ITaskController {
   public constructor(private readonly service: ITaskService) {}
 
-  async list(query: ListTasksQuery): Promise<{ data: Task[]; total: number }> {
+  async list(query: ListTasksQuery): Promise<{ tasks: Task[]; total: number }> {
     const task = await this.service.list(query)
 
     return task
