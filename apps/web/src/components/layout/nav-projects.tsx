@@ -1,15 +1,20 @@
-import { CaretDownIcon, PlusIcon } from '@phosphor-icons/react'
-import { useState } from 'react'
+import { DotsThreeOutlineIcon, FolderIcon, ShareFatIcon, TrashIcon } from '@phosphor-icons/react'
 
-import { Collapsible, CollapsibleContent } from '@/web/components/ui/collapsible'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/web/components/ui/dropdown-menu'
 import {
   SidebarGroup,
-  SidebarGroupAction,
-  SidebarGroupContent,
   SidebarGroupLabel,
   SidebarMenu,
+  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from '@/web/components/ui/sidebar'
 import { cn } from '@/web/lib/utils'
 
@@ -19,8 +24,7 @@ interface Project {
 }
 
 /**
- * Placeholder data — there is no `projects` table, API route, or shared schema
- * yet, so these exist to exercise the section's collapse behaviour.
+ * Placeholder data — there is no `projects` table, API route, or shared schema yet.
  */
 const projects: Project[] = [
   { name: 'Getting Started', color: 'bg-sky-500' },
@@ -29,60 +33,56 @@ const projects: Project[] = [
 ]
 
 export function NavProjects() {
-  // Controlled rather than `defaultOpen` so both the label and the caret button
-  // can drive the same state, and so the caret's rotation depends on state we
-  // own rather than on a `data-panel-open` attribute surviving Base UI's
-  // `render` prop merging.
-  const [isOpen, setIsOpen] = useState(true)
+  const { isMobile } = useSidebar()
 
   return (
-    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-      <SidebarGroup>
-        {/*
-          The label is itself a collapse trigger, so the whole header row is
-          clickable. The two action buttons are absolutely positioned siblings
-          rather than children — nesting buttons inside a button is invalid HTML
-          and would make the plus button un-clickable.
-        */}
-        <SidebarGroupLabel
-          render={<button type="button" />}
-          className="w-full cursor-pointer pr-14 font-semibold text-sidebar-foreground"
-          aria-expanded={isOpen}
-          onClick={() => setIsOpen((open) => !open)}
-        >
-          My Projects
-        </SidebarGroupLabel>
+    <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+      <SidebarGroupLabel>My Projects</SidebarGroupLabel>
+      <SidebarMenu>
+        {projects.map(({ name, color }) => (
+          <SidebarMenuItem key={name}>
+            <SidebarMenuButton tooltip={name}>
+              <span className={cn('size-2 shrink-0 rounded-full', color)} />
+              <span>{name}</span>
+            </SidebarMenuButton>
 
-        <SidebarGroupAction className="top-2.5 right-9" aria-label="Add project">
-          <PlusIcon />
-        </SidebarGroupAction>
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                render={<SidebarMenuAction showOnHover className="aria-expanded:bg-muted" />}
+              >
+                <DotsThreeOutlineIcon />
+                <span className="sr-only">More</span>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                className="w-fit"
+                side={isMobile ? 'bottom' : 'right'}
+                align={isMobile ? 'end' : 'start'}
+              >
+                <DropdownMenuItem>
+                  <FolderIcon />
+                  <span>View Project</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <ShareFatIcon />
+                  <span>Share Project</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem variant="destructive">
+                  <TrashIcon />
+                  <span>Delete Project</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </SidebarMenuItem>
+        ))}
 
-        <SidebarGroupAction
-          className="top-2.5"
-          aria-label={isOpen ? 'Collapse My Projects' : 'Expand My Projects'}
-          aria-expanded={isOpen}
-          onClick={() => setIsOpen((open) => !open)}
-        >
-          <CaretDownIcon
-            className={cn('transition-transform duration-200', isOpen && 'rotate-180')}
-          />
-        </SidebarGroupAction>
-
-        <CollapsibleContent>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {projects.map(({ name, color }) => (
-                <SidebarMenuItem key={name}>
-                  <SidebarMenuButton tooltip={name}>
-                    <span className={cn('size-2 shrink-0 rounded-full', color)} />
-                    <span>{name}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </CollapsibleContent>
-      </SidebarGroup>
-    </Collapsible>
+        <SidebarMenuItem>
+          <SidebarMenuButton className="text-sidebar-foreground/70">
+            <DotsThreeOutlineIcon className="text-sidebar-foreground/70" />
+            <span>More</span>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    </SidebarGroup>
   )
 }

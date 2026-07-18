@@ -1,19 +1,30 @@
-import { Sidebar, SidebarContent, SidebarHeader } from '@/web/components/ui/sidebar'
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarRail,
+} from '@/web/components/ui/sidebar'
 
+import { BrandHeader } from './brand-header'
 import { NavMain } from './nav-main'
 import { NavProjects } from './nav-projects'
 import { NavUser } from './nav-user'
 
 export function AppSidebar() {
   return (
-    <Sidebar collapsible="offcanvas">
+    <Sidebar collapsible="icon">
       <SidebarHeader>
-        <NavUser />
+        <BrandHeader />
       </SidebarHeader>
       <SidebarContent>
         <NavMain />
         <NavProjects />
       </SidebarContent>
+      <SidebarFooter>
+        <NavUser />
+      </SidebarFooter>
+      <SidebarRail />
     </Sidebar>
   )
 }
