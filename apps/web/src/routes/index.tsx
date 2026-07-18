@@ -13,7 +13,7 @@ export const Route = createFileRoute('/')({
 
 function RouteComponent() {
   return (
-    <div className="w-full max-w-2xl px-6 pb-6">
+    <div className="w-full max-w-2xl">
       <h1 className="mb-6 font-bold text-3xl">Todoodle</h1>
       <TaskForm />
       <TaskList />
