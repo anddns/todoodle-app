@@ -4,7 +4,7 @@ import type { ListTasksQuery, Task } from '@/api/modules/tasks/task.schemas'
 import { NotFoundError } from '@/api/shared/errors/app-error'
 
 export interface ITaskService {
-  list(query: ListTasksQuery): Promise<{ data: Task[]; total: number }>
+  list(query: ListTasksQuery): Promise<{ tasks: Task[]; total: number }>
   getById(id: string): Promise<Task>
   create(input: CreateTaskInput): Promise<Task>
   update(id: string, data: UpdateTaskInput): Promise<Task>
@@ -14,7 +14,7 @@ export interface ITaskService {
 export class TaskService implements ITaskService {
   public constructor(private readonly repository: ITaskRepository) {}
 
-  async list(query: ListTasksQuery): Promise<{ data: Task[]; total: number }> {
+  async list(query: ListTasksQuery): Promise<{ tasks: Task[]; total: number }> {
     return await this.repository.findAll(query)
   }
 
