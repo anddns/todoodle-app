@@ -7,7 +7,7 @@ import { tasksTable } from '@/api/shared/database/schema/tasks.table'
 import { DatabaseError } from '@/api/shared/errors/infrastructure-error'
 
 export type ITaskRepository = {
-  findAll(query: ListTasksQuery): Promise<{ data: Task[]; total: number }>
+  findAll(query: ListTasksQuery): Promise<{ tasks: Task[]; total: number }>
   findById(id: string): Promise<Task | null>
   create(data: CreateTaskInput): Promise<Task>
   update(id: string, data: UpdateTaskInput): Promise<Task | null>
@@ -18,7 +18,7 @@ export type ITaskRepository = {
 export class TaskRepository implements ITaskRepository {
   public constructor(private readonly database: DrizzleDatabase) {}
 
-  async findAll(query: ListTasksQuery): Promise<{ data: Task[]; total: number }> {
+  async findAll(query: ListTasksQuery): Promise<{ tasks: Task[]; total: number }> {
     const { status, sortBy, sortOrder, limit, offset } = query
 
     const whereClause =
@@ -43,7 +43,7 @@ export class TaskRepository implements ITaskRepository {
       this.database.select({ total: count() }).from(tasksTable).where(whereClause),
     ])
 
-    return { data, total: totalResult[0] ? totalResult[0].total : 0 }
+    return { tasks: data, total: totalResult[0] ? totalResult[0].total : 0 }
   }
 
   async findById(id: string): Promise<Task | null> {
