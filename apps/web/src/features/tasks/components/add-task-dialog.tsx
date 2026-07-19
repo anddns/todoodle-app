@@ -1,6 +1,6 @@
-import { useId, useState } from 'react'
 import { PRIORITY_LEVELS, PRIORITY_META, type Priority } from '@todoodle-app/shared'
-
+import { useId, useState } from 'react'
+import { projects } from '@/web/components/layout/projects-data'
 import { Button } from '@/web/components/ui/button'
 import { Checkbox } from '@/web/components/ui/checkbox'
 import {
@@ -21,7 +21,6 @@ import {
   SelectValue,
 } from '@/web/components/ui/select'
 import { Textarea } from '@/web/components/ui/textarea'
-import { projects } from '@/web/components/layout/projects-data'
 import { slugify } from '@/web/lib/utils'
 
 import { useCreateTask } from '../hooks/use-create-task'
@@ -48,16 +47,16 @@ export function AddTaskDialog({ open, onOpenChange }: AddTaskDialogProps) {
   // this selection isn't sent with the create payload — see projects-data.ts.
   const [location, setLocation] = useState<string>(INBOX_LOCATION)
   const [priority, setPriority] = useState<string>('')
-  const [dueOn, setDueOn] = useState('')
+  const [isAllDay, setIsAllDay] = useState<boolean>(true)
   const [dueAt, setDueAt] = useState('')
-  const [isCompleted, setIsCompleted] = useState(false)
+  const [isCompleted, setIsCompleted] = useState<boolean>(false)
 
   const resetForm = () => {
     setTitle('')
     setDescription('')
     setLocation(INBOX_LOCATION)
     setPriority('')
-    setDueOn('')
+    setIsAllDay(true)
     setDueAt('')
     setIsCompleted(false)
   }
@@ -77,13 +76,13 @@ export function AddTaskDialog({ open, onOpenChange }: AddTaskDialogProps) {
         title: title.trim(),
         description: description.trim() || undefined,
         priority: priority ? (priority as Priority) : undefined,
-        dueOn: dueOn ? new Date(dueOn).toISOString() : undefined,
+        isAllDay: isAllDay,
         dueAt: dueAt ? new Date(dueAt).toISOString() : undefined,
         completedAt: isCompleted ? new Date().toISOString() : undefined,
       },
       {
         onSuccess: () => handleOpenChange(false),
-      }
+      },
     )
   }
 
@@ -120,10 +119,13 @@ export function AddTaskDialog({ open, onOpenChange }: AddTaskDialogProps) {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="gap-4 grid grid-cols-2">
             <div className="flex flex-col gap-1.5">
               <Label>Location</Label>
-              <Select value={location} onValueChange={(value) => setLocation(value ?? INBOX_LOCATION)}>
+              <Select
+                value={location}
+                onValueChange={(value) => setLocation(value ?? INBOX_LOCATION)}
+              >
                 <SelectTrigger>
                   <SelectValue>{locationLabel}</SelectValue>
                 </SelectTrigger>
@@ -155,17 +157,7 @@ export function AddTaskDialog({ open, onOpenChange }: AddTaskDialogProps) {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="flex flex-col gap-1.5">
-              <Label htmlFor={`${formId}-due-on`}>Due date</Label>
-              <Input
-                id={`${formId}-due-on`}
-                type="date"
-                value={dueOn}
-                onChange={(event) => setDueOn(event.target.value)}
-              />
-            </div>
-
+          <div className="gap-4 grid grid-cols-2">
             <div className="flex flex-col gap-1.5">
               <Label htmlFor={`${formId}-due-at`}>Due at</Label>
               <Input
@@ -175,12 +167,14 @@ export function AddTaskDialog({ open, onOpenChange }: AddTaskDialogProps) {
                 onChange={(event) => setDueAt(event.target.value)}
               />
             </div>
-          </div>
 
-          <Label className="w-fit">
-            <Checkbox checked={isCompleted} onCheckedChange={setIsCompleted} />
-            Mark as already completed
-          </Label>
+            <div className="flex flex-col justify-center gap-1.5">
+              <Label className="mt-4.75 w-fit">
+                <Checkbox checked={isAllDay} onCheckedChange={setIsAllDay} />
+                All day task
+              </Label>
+            </div>
+          </div>
 
           {isError && (
             <p className="text-destructive text-sm">Failed to create task: {error.message}</p>
