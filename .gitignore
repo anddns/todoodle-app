@@ -1,1 +1,11 @@
 node_modules
+
+# AI Tools & Context
+.claude
+.mcp.json
+
+# VS Code Personal Settings
+.vscode/settings.json
+# Ignore VS Code local history/state
+.vscode/.ropeproject/
+.vscode/tags
