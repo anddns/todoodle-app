@@ -12,6 +12,7 @@ import {
   Trash2Icon,
   UserRoundPlus,
 } from 'lucide-react'
+import { Link, useLocation } from '@tanstack/react-router'
 
 import {
   Collapsible,
@@ -35,7 +36,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/web/components/ui/sidebar'
-import { cn } from '@/web/lib/utils'
+import { cn, slugify } from '@/web/lib/utils'
 
 /**
  * Revealed on header hover (and whenever focus is inside the header, so the
@@ -60,6 +61,7 @@ const favorites: FavoriteItem[] = [
 
 export function NavFavorites() {
   const { isMobile } = useSidebar()
+  const pathname = useLocation({ select: (location) => location.pathname })
 
   return (
     <Collapsible defaultOpen className="group/collapsible">
@@ -89,69 +91,85 @@ export function NavFavorites() {
 
         <CollapsibleContent className="h-(--collapsible-panel-height) overflow-hidden transition-[height] duration-200 ease-out data-ending-style:h-0 data-starting-style:h-0">
           <SidebarMenu>
-            {favorites.map(({ name }) => (
-              <SidebarMenuItem key={name}>
-                <SidebarMenuButton className="items-center gap-2" tooltip={name}>
-                  <div className="place-items-center grid size-6">
-                    <HashIcon strokeWidth={1} className="col-start-1 row-start-1 size-4" />
-                  </div>
+            {favorites.map(({ name }) => {
+              const slug = slugify(name)
+              const projectPath = `/app/projects/${slug}`
 
-                  <span className="font-normal text-sm leading-4">{name}</span>
-                </SidebarMenuButton>
-
-                <DropdownMenu>
-                  <DropdownMenuTrigger render={<SidebarMenuAction showOnHover />}>
-                    <EllipsisIcon strokeWidth={2.5} />
-                    <span className="sr-only">More</span>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent
-                    className="w-fit"
-                    side={isMobile ? 'bottom' : 'right'}
-                    align={isMobile ? 'end' : 'start'}
+              return (
+                <SidebarMenuItem key={name}>
+                  {/*
+                    Favorites items link to the same project page as their My
+                    Projects counterpart — both lists reference the same
+                    underlying placeholder items, so selecting either one
+                    navigates to and highlights the same page.
+                  */}
+                  <SidebarMenuButton
+                    className="items-center gap-2"
+                    tooltip={name}
+                    isActive={pathname === projectPath}
+                    render={<Link to="/app/projects/$slug" params={{ slug }} />}
                   >
-                    <DropdownMenuItem>
-                      <LucideArrowUpFromLine />
-                      <span>Add project above</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <LucideArrowDownFromLine />
-                      <span>Add project below</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem>
-                      <PencilIcon />
-                      <span>Edit</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <HeartIcon />
-                      <span>Add to favorites</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <CircleArrowRightIcon />
-                      <span>Move</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <CopyIcon />
-                      <span>Duplicate</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem>
-                      <UserRoundPlus />
-                      <span>Share</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <LinkIcon />
-                      <span>Copy link to project</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem variant="destructive">
-                      <Trash2Icon />
-                      <span>Delete</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </SidebarMenuItem>
-            ))}
+                    <div className="place-items-center grid size-6">
+                      <HashIcon strokeWidth={1} className="col-start-1 row-start-1 size-4" />
+                    </div>
+
+                    <span className="font-normal text-sm leading-4">{name}</span>
+                  </SidebarMenuButton>
+
+                  <DropdownMenu>
+                    <DropdownMenuTrigger render={<SidebarMenuAction showOnHover />}>
+                      <EllipsisIcon strokeWidth={2.5} />
+                      <span className="sr-only">More</span>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                      className="w-fit"
+                      side={isMobile ? 'bottom' : 'right'}
+                      align={isMobile ? 'end' : 'start'}
+                    >
+                      <DropdownMenuItem>
+                        <LucideArrowUpFromLine />
+                        <span>Add project above</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <LucideArrowDownFromLine />
+                        <span>Add project below</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem>
+                        <PencilIcon />
+                        <span>Edit</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <HeartIcon />
+                        <span>Add to favorites</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <CircleArrowRightIcon />
+                        <span>Move</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <CopyIcon />
+                        <span>Duplicate</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem>
+                        <UserRoundPlus />
+                        <span>Share</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <LinkIcon />
+                        <span>Copy link to project</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem variant="destructive">
+                        <Trash2Icon />
+                        <span>Delete</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </SidebarMenuItem>
+              )
+            })}
           </SidebarMenu>
         </CollapsibleContent>
       </SidebarGroup>
