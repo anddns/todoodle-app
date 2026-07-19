@@ -1,4 +1,4 @@
-import { CaretUpDownIcon, GearSixIcon, SignOutIcon, UserCircleIcon } from '@phosphor-icons/react'
+import { ChevronsUpDownIcon, CircleUserIcon, LogOutIcon, SettingsIcon } from 'lucide-react'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/web/components/ui/avatar'
 import {
@@ -56,7 +56,7 @@ export function NavUser() {
               <span className="truncate font-medium">{user.name}</span>
               <span className="truncate text-xs">{user.email}</span>
             </div>
-            <CaretUpDownIcon className="ml-auto size-4" />
+            <ChevronsUpDownIcon className="ml-auto size-4" />
           </DropdownMenuTrigger>
 
           <DropdownMenuContent
@@ -82,17 +82,17 @@ export function NavUser() {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <UserCircleIcon />
+                <CircleUserIcon />
                 Account
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <GearSixIcon />
+                <SettingsIcon />
                 Settings
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <SignOutIcon />
+              <LogOutIcon />
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>

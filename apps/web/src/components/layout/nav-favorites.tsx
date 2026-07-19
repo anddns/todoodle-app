@@ -1,25 +1,17 @@
 import {
-  BetweenHorizontalEndIcon,
-  BetweenHorizontalStartIcon,
   ChevronDownIcon,
   CircleArrowRightIcon,
   CopyIcon,
   EllipsisIcon,
-  FolderIcon,
   HashIcon,
   HeartIcon,
   LinkIcon,
   LucideArrowDownFromLine,
   LucideArrowUpFromLine,
-  PanelBottomClose,
-  PanelTopClose,
   PencilIcon,
-  PlusIcon,
-  Share2Icon,
   Trash2Icon,
   UserRoundPlus,
 } from 'lucide-react'
-import { Link, useLocation } from '@tanstack/react-router'
 
 import {
   Collapsible,
@@ -46,71 +38,47 @@ import {
 import { cn } from '@/web/lib/utils'
 
 /**
- * Revealed on header hover (and whenever something inside the header has
- * *keyboard* focus, so the controls stay reachable by keyboard — `:focus-visible`
- * rather than `:focus-within`, so a mouse click that leaves an element focused
- * doesn't keep the controls stuck visible after the mouse moves away). Kept
- * visible on touch, where there is no hover to reveal them.
+ * Revealed on header hover (and whenever focus is inside the header, so the
+ * control is reachable by keyboard). Kept visible on touch, where there is
+ * no hover to reveal it.
  */
 const revealOnHover =
-  'opacity-0 transition-opacity group-hover/section:opacity-100 group-has-[:focus-visible]/section:opacity-100 max-md:opacity-100'
+  'opacity-0 transition-opacity group-hover/section:opacity-100 group-focus-within/section:opacity-100 max-md:opacity-100'
 
-/**
- * Matches the green tint the header label gets when "My Projects" is the
- * active route — `SidebarGroupAction`'s own default hover/press colors stay
- * neutral (shared with "Favorites", which never gets this tint), so the two
- * buttons here opt in explicitly instead.
- */
-const primaryActionTint = 'hover:bg-sidebar-primary/10 hover:text-sidebar-primary active:bg-sidebar-primary/20'
-
-interface Project {
+interface FavoriteItem {
   name: string
-  color: string
 }
 
 /**
- * Placeholder data — there is no `projects` table, API route, or shared schema yet.
+ * Placeholder data — there is no favorites table, API route, or shared schema yet.
  */
-const projects: Project[] = [
-  { name: 'Getting Started', color: 'bg-sky-500' },
-  { name: 'Work', color: 'bg-amber-500' },
-  { name: 'Personal', color: 'bg-violet-500' },
+const favorites: FavoriteItem[] = [
+  { name: 'Getting Started' },
+  { name: 'Work' },
+  { name: 'Personal' },
 ]
 
-export function NavProjects() {
+export function NavFavorites() {
   const { isMobile } = useSidebar()
-  const pathname = useLocation({ select: (location) => location.pathname })
-  const isActive = pathname === '/app/projects'
 
   return (
     <Collapsible defaultOpen className="group/collapsible">
       <SidebarGroup className="group-data-[collapsible=icon]:hidden">
         {/*
           `group/section` scopes the header's hover state to this row only —
-          without it, hovering a project below would light up the header. It
-          also means hovering the + or the caret keeps the header highlighted,
-          since both live inside the group.
+          without it, hovering a favorite below would light up the header. The
+          label itself is inert (no hover/active state, not a button); only the
+          chevron reveals on hover, since it's the sole interactive control here.
         */}
         <div className="group/section relative">
-          <SidebarGroupLabel
-            render={<Link to="/app/projects" />}
-            isActive={isActive}
-            className="not-data-active:group-hover/section:bg-sidebar-accent pr-16 w-full cursor-pointer not-data-active:group-hover/section:text-sidebar-accent-foreground"
-          >
-            <span className="font-semibold text-sm leading-normal">My Projects</span>
+          <SidebarGroupLabel className="pr-8 w-full">
+            <span className="font-semibold text-sm leading-normal">Favorites</span>
           </SidebarGroupLabel>
 
           <SidebarGroupAction
-            className={cn('top-0.75 right-8.5', revealOnHover, primaryActionTint)}
-            aria-label="Add project"
-          >
-            <PlusIcon strokeWidth={2} />
-          </SidebarGroupAction>
-
-          <SidebarGroupAction
             render={<CollapsibleTrigger />}
-            className={cn('top-0.75 right-1', revealOnHover, primaryActionTint)}
-            aria-label="Toggle My Projects"
+            className={cn('top-0.75 right-1', revealOnHover)}
+            aria-label="Toggle Favorites"
           >
             <ChevronDownIcon
               strokeWidth={2}
@@ -121,7 +89,7 @@ export function NavProjects() {
 
         <CollapsibleContent className="h-(--collapsible-panel-height) overflow-hidden transition-[height] duration-200 ease-out data-ending-style:h-0 data-starting-style:h-0">
           <SidebarMenu>
-            {projects.map(({ name, color }) => (
+            {favorites.map(({ name }) => (
               <SidebarMenuItem key={name}>
                 <SidebarMenuButton className="items-center gap-2" tooltip={name}>
                   <div className="place-items-center grid size-6">

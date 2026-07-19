@@ -7,6 +7,7 @@ import {
 } from '@/web/components/ui/sidebar'
 
 import { BrandHeader } from './brand-header'
+import { NavFavorites } from './nav-favorites'
 import { NavMain } from './nav-main'
 import { NavProjects } from './nav-projects'
 import { NavUser } from './nav-user'
@@ -19,6 +20,7 @@ export function AppSidebar() {
       </SidebarHeader>
       <SidebarContent>
         <NavMain />
+        <NavFavorites />
         <NavProjects />
       </SidebarContent>
       <SidebarFooter>
