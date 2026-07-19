@@ -1,6 +1,6 @@
 import { PRIORITY_LEVELS } from '@todoodle-app/shared'
 import { sql } from 'drizzle-orm'
-import { date, pgEnum, snakeCase, text, timestamp, uuid } from 'drizzle-orm/pg-core'
+import { boolean, pgEnum, snakeCase, text, timestamp, uuid } from 'drizzle-orm/pg-core'
 
 export const priorityEnum = pgEnum('priority', PRIORITY_LEVELS)
 
@@ -9,7 +9,7 @@ export const tasksTable = snakeCase.table('tasks', {
   title: text('title').notNull(),
   description: text('description'),
   priority: priorityEnum('priority').default('p4'),
-  dueOn: date('due_on', { mode: 'string' }),
+  isAllDay: boolean('is_all_day').default(true),
   dueAt: timestamp('due_at', { mode: 'string', withTimezone: true }),
   completedAt: timestamp('completed_at', { mode: 'string', withTimezone: true }),
   updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true })
