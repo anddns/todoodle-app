@@ -17,6 +17,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/web/components/ui/sidebar'
+import { useAddTaskDialog } from '@/web/features/tasks/components/add-task-dialog-provider'
 
 type NavPath =
   | '/app/inbox'
@@ -43,6 +44,7 @@ const navItems: NavItem[] = [
 
 export function NavMain() {
   const pathname = useLocation({ select: (location) => location.pathname })
+  const { openAddTaskDialog } = useAddTaskDialog()
 
   return (
     <SidebarGroup>
@@ -55,6 +57,7 @@ export function NavMain() {
               <SidebarMenuItem key={label}>
                 <SidebarMenuButton
                   tooltip={label}
+                  onClick={openAddTaskDialog}
                   className="inline-flex items-center font-semibold text-primary hover:text-primary active:text-primary active:translate-y-px cursor-pointer group-data-[collapsible=icon]:p-1!"
                 >
                   <div className="place-items-center grid shrink-0 bg-primary rounded-full size-6">
