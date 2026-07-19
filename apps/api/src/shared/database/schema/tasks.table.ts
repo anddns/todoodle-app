@@ -1,11 +1,11 @@
 import { sql } from 'drizzle-orm'
-import { date, snakeCase, text, timestamp, uuid } from 'drizzle-orm/pg-core'
+import { boolean, snakeCase, text, timestamp, uuid } from 'drizzle-orm/pg-core'
 
 export const tasksTable = snakeCase.table('tasks', {
   id: uuid('id').primaryKey().default(sql`uuidv7()`),
   title: text('title').notNull(),
   description: text('description'),
-  dueOn: date('due_on', { mode: 'string' }),
+  isAllDay: boolean('is_all_day'),
   dueAt: timestamp('due_at', { mode: 'string', withTimezone: true }),
   completedAt: timestamp('completed_at', { mode: 'string', withTimezone: true }),
   updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true })

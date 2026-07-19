@@ -6,7 +6,7 @@ export const taskSchema = z.object({
   id: z.uuidv7(),
   title: z.string().min(1),
   description: z.string().optional(),
-  dueOn: z.iso.datetime().optional(),
+  isAllday: z.boolean().optional(),
   dueAt: z.iso.datetime().optional(),
   completedAt: z.iso.datetime().nullable(),
   updatedAt: z.iso.datetime(),
@@ -28,7 +28,7 @@ export const listTasksQuerySchema = z.object({
 export const createTaskSchema = z.object({
   title: z.string().min(1),
   description: z.string().optional(),
-  dueOn: z.iso.datetime().optional(),
+  isAllday: z.boolean().optional(),
   dueAt: z.iso.datetime().optional(),
   completedAt: z.iso.datetime().optional(),
 })
@@ -37,7 +37,7 @@ export const updateTaskSchema = z
   .object({
     title: z.string().optional(),
     description: z.string().optional().nullable(),
-    dueOn: z.iso.date().optional().nullable(),
+    isAllday: z.boolean().optional().nullable(),
     dueAt: z.iso.datetime().optional().nullable(),
     completedAt: z.iso.datetime().optional().nullable(),
   })
