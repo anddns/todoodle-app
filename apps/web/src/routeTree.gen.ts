@@ -9,50 +9,207 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppRouteImport } from './routes/app'
+import { Route as AppIndexRouteImport } from './routes/app/index'
+import { Route as AppUpcomingRouteImport } from './routes/app/upcoming'
+import { Route as AppTodayRouteImport } from './routes/app/today'
+import { Route as AppReportingRouteImport } from './routes/app/reporting'
+import { Route as AppProjectsRouteImport } from './routes/app/projects'
+import { Route as AppInboxRouteImport } from './routes/app/inbox'
+import { Route as AppFiltersLabelsRouteImport } from './routes/app/filters-labels'
 
-const IndexRoute = IndexRouteImport.update({
+const AppRoute = AppRouteImport.update({
+  id: '/app',
+  path: '/app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AppRoute,
+} as any)
+const AppUpcomingRoute = AppUpcomingRouteImport.update({
+  id: '/upcoming',
+  path: '/upcoming',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppTodayRoute = AppTodayRouteImport.update({
+  id: '/today',
+  path: '/today',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppReportingRoute = AppReportingRouteImport.update({
+  id: '/reporting',
+  path: '/reporting',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProjectsRoute = AppProjectsRouteImport.update({
+  id: '/projects',
+  path: '/projects',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppInboxRoute = AppInboxRouteImport.update({
+  id: '/inbox',
+  path: '/inbox',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppFiltersLabelsRoute = AppFiltersLabelsRouteImport.update({
+  id: '/filters-labels',
+  path: '/filters-labels',
+  getParentRoute: () => AppRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/app': typeof AppRouteWithChildren
+  '/app/filters-labels': typeof AppFiltersLabelsRoute
+  '/app/inbox': typeof AppInboxRoute
+  '/app/projects': typeof AppProjectsRoute
+  '/app/reporting': typeof AppReportingRoute
+  '/app/today': typeof AppTodayRoute
+  '/app/upcoming': typeof AppUpcomingRoute
+  '/app/': typeof AppIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/app/filters-labels': typeof AppFiltersLabelsRoute
+  '/app/inbox': typeof AppInboxRoute
+  '/app/projects': typeof AppProjectsRoute
+  '/app/reporting': typeof AppReportingRoute
+  '/app/today': typeof AppTodayRoute
+  '/app/upcoming': typeof AppUpcomingRoute
+  '/app': typeof AppIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/app': typeof AppRouteWithChildren
+  '/app/filters-labels': typeof AppFiltersLabelsRoute
+  '/app/inbox': typeof AppInboxRoute
+  '/app/projects': typeof AppProjectsRoute
+  '/app/reporting': typeof AppReportingRoute
+  '/app/today': typeof AppTodayRoute
+  '/app/upcoming': typeof AppUpcomingRoute
+  '/app/': typeof AppIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/app'
+    | '/app/filters-labels'
+    | '/app/inbox'
+    | '/app/projects'
+    | '/app/reporting'
+    | '/app/today'
+    | '/app/upcoming'
+    | '/app/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/app/filters-labels'
+    | '/app/inbox'
+    | '/app/projects'
+    | '/app/reporting'
+    | '/app/today'
+    | '/app/upcoming'
+    | '/app'
+  id:
+    | '__root__'
+    | '/app'
+    | '/app/filters-labels'
+    | '/app/inbox'
+    | '/app/projects'
+    | '/app/reporting'
+    | '/app/today'
+    | '/app/upcoming'
+    | '/app/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/app/': {
+      id: '/app/'
+      path: '/'
+      fullPath: '/app/'
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/upcoming': {
+      id: '/app/upcoming'
+      path: '/upcoming'
+      fullPath: '/app/upcoming'
+      preLoaderRoute: typeof AppUpcomingRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/today': {
+      id: '/app/today'
+      path: '/today'
+      fullPath: '/app/today'
+      preLoaderRoute: typeof AppTodayRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/reporting': {
+      id: '/app/reporting'
+      path: '/reporting'
+      fullPath: '/app/reporting'
+      preLoaderRoute: typeof AppReportingRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/projects': {
+      id: '/app/projects'
+      path: '/projects'
+      fullPath: '/app/projects'
+      preLoaderRoute: typeof AppProjectsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/inbox': {
+      id: '/app/inbox'
+      path: '/inbox'
+      fullPath: '/app/inbox'
+      preLoaderRoute: typeof AppInboxRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/filters-labels': {
+      id: '/app/filters-labels'
+      path: '/filters-labels'
+      fullPath: '/app/filters-labels'
+      preLoaderRoute: typeof AppFiltersLabelsRouteImport
+      parentRoute: typeof AppRoute
     }
   }
 }
 
+interface AppRouteChildren {
+  AppFiltersLabelsRoute: typeof AppFiltersLabelsRoute
+  AppInboxRoute: typeof AppInboxRoute
+  AppProjectsRoute: typeof AppProjectsRoute
+  AppReportingRoute: typeof AppReportingRoute
+  AppTodayRoute: typeof AppTodayRoute
+  AppUpcomingRoute: typeof AppUpcomingRoute
+  AppIndexRoute: typeof AppIndexRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppFiltersLabelsRoute: AppFiltersLabelsRoute,
+  AppInboxRoute: AppInboxRoute,
+  AppProjectsRoute: AppProjectsRoute,
+  AppReportingRoute: AppReportingRoute,
+  AppTodayRoute: AppTodayRoute,
+  AppUpcomingRoute: AppUpcomingRoute,
+  AppIndexRoute: AppIndexRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  AppRoute: AppRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
