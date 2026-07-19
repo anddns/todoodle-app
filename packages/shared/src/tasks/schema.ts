@@ -5,7 +5,7 @@ export const createTaskSchema = z.object({
   title: z.string().min(1),
   description: z.string().optional(),
   priority: z.enum(PRIORITY_LEVELS).optional(),
-  dueOn: z.iso.datetime().optional(),
+  isAllDay: z.boolean().optional(),
   dueAt: z.iso.datetime().optional(),
   completedAt: z.iso.datetime().optional(),
 })
@@ -14,8 +14,8 @@ export const updateTaskSchema = z
   .object({
     title: z.string().optional(),
     description: z.string().optional().nullable(),
-    priority: z.enum(PRIORITY_LEVELS).optional().nullable(),
-    dueOn: z.iso.date().optional().nullable(),
+    priority: z.enum(PRIORITY_LEVELS).optional(),
+    isAllDay: z.boolean().optional(),
     dueAt: z.iso.datetime().optional().nullable(),
     completedAt: z.iso.datetime().optional().nullable(),
   })
