@@ -8,7 +8,7 @@ export const taskSchema = z.object({
   title: z.string().min(1),
   description: z.string().optional(),
   priority: z.enum(PRIORITY_LEVELS).optional(),
-  dueOn: z.iso.datetime().optional(),
+  isAllday: z.boolean().optional(),
   dueAt: z.iso.datetime().optional(),
   completedAt: z.iso.datetime().nullable(),
   updatedAt: z.iso.datetime(),
