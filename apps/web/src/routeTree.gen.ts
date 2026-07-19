@@ -14,9 +14,10 @@ import { Route as AppIndexRouteImport } from './routes/app/index'
 import { Route as AppUpcomingRouteImport } from './routes/app/upcoming'
 import { Route as AppTodayRouteImport } from './routes/app/today'
 import { Route as AppReportingRouteImport } from './routes/app/reporting'
-import { Route as AppProjectsRouteImport } from './routes/app/projects'
 import { Route as AppInboxRouteImport } from './routes/app/inbox'
 import { Route as AppFiltersLabelsRouteImport } from './routes/app/filters-labels'
+import { Route as AppProjectsIndexRouteImport } from './routes/app/projects/index'
+import { Route as AppProjectsSlugRouteImport } from './routes/app/projects/$slug'
 
 const AppRoute = AppRouteImport.update({
   id: '/app',
@@ -43,11 +44,6 @@ const AppReportingRoute = AppReportingRouteImport.update({
   path: '/reporting',
   getParentRoute: () => AppRoute,
 } as any)
-const AppProjectsRoute = AppProjectsRouteImport.update({
-  id: '/projects',
-  path: '/projects',
-  getParentRoute: () => AppRoute,
-} as any)
 const AppInboxRoute = AppInboxRouteImport.update({
   id: '/inbox',
   path: '/inbox',
@@ -58,36 +54,49 @@ const AppFiltersLabelsRoute = AppFiltersLabelsRouteImport.update({
   path: '/filters-labels',
   getParentRoute: () => AppRoute,
 } as any)
+const AppProjectsIndexRoute = AppProjectsIndexRouteImport.update({
+  id: '/projects/',
+  path: '/projects/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProjectsSlugRoute = AppProjectsSlugRouteImport.update({
+  id: '/projects/$slug',
+  path: '/projects/$slug',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/app': typeof AppRouteWithChildren
   '/app/filters-labels': typeof AppFiltersLabelsRoute
   '/app/inbox': typeof AppInboxRoute
-  '/app/projects': typeof AppProjectsRoute
   '/app/reporting': typeof AppReportingRoute
   '/app/today': typeof AppTodayRoute
   '/app/upcoming': typeof AppUpcomingRoute
   '/app/': typeof AppIndexRoute
+  '/app/projects/$slug': typeof AppProjectsSlugRoute
+  '/app/projects/': typeof AppProjectsIndexRoute
 }
 export interface FileRoutesByTo {
   '/app/filters-labels': typeof AppFiltersLabelsRoute
   '/app/inbox': typeof AppInboxRoute
-  '/app/projects': typeof AppProjectsRoute
   '/app/reporting': typeof AppReportingRoute
   '/app/today': typeof AppTodayRoute
   '/app/upcoming': typeof AppUpcomingRoute
   '/app': typeof AppIndexRoute
+  '/app/projects/$slug': typeof AppProjectsSlugRoute
+  '/app/projects': typeof AppProjectsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/app': typeof AppRouteWithChildren
   '/app/filters-labels': typeof AppFiltersLabelsRoute
   '/app/inbox': typeof AppInboxRoute
-  '/app/projects': typeof AppProjectsRoute
   '/app/reporting': typeof AppReportingRoute
   '/app/today': typeof AppTodayRoute
   '/app/upcoming': typeof AppUpcomingRoute
   '/app/': typeof AppIndexRoute
+  '/app/projects/$slug': typeof AppProjectsSlugRoute
+  '/app/projects/': typeof AppProjectsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -95,30 +104,33 @@ export interface FileRouteTypes {
     | '/app'
     | '/app/filters-labels'
     | '/app/inbox'
-    | '/app/projects'
     | '/app/reporting'
     | '/app/today'
     | '/app/upcoming'
     | '/app/'
+    | '/app/projects/$slug'
+    | '/app/projects/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/app/filters-labels'
     | '/app/inbox'
-    | '/app/projects'
     | '/app/reporting'
     | '/app/today'
     | '/app/upcoming'
     | '/app'
+    | '/app/projects/$slug'
+    | '/app/projects'
   id:
     | '__root__'
     | '/app'
     | '/app/filters-labels'
     | '/app/inbox'
-    | '/app/projects'
     | '/app/reporting'
     | '/app/today'
     | '/app/upcoming'
     | '/app/'
+    | '/app/projects/$slug'
+    | '/app/projects/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -162,13 +174,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppReportingRouteImport
       parentRoute: typeof AppRoute
     }
-    '/app/projects': {
-      id: '/app/projects'
-      path: '/projects'
-      fullPath: '/app/projects'
-      preLoaderRoute: typeof AppProjectsRouteImport
-      parentRoute: typeof AppRoute
-    }
     '/app/inbox': {
       id: '/app/inbox'
       path: '/inbox'
@@ -183,27 +188,43 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppFiltersLabelsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/projects/': {
+      id: '/app/projects/'
+      path: '/projects'
+      fullPath: '/app/projects/'
+      preLoaderRoute: typeof AppProjectsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/projects/$slug': {
+      id: '/app/projects/$slug'
+      path: '/projects/$slug'
+      fullPath: '/app/projects/$slug'
+      preLoaderRoute: typeof AppProjectsSlugRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
 interface AppRouteChildren {
   AppFiltersLabelsRoute: typeof AppFiltersLabelsRoute
   AppInboxRoute: typeof AppInboxRoute
-  AppProjectsRoute: typeof AppProjectsRoute
   AppReportingRoute: typeof AppReportingRoute
   AppTodayRoute: typeof AppTodayRoute
   AppUpcomingRoute: typeof AppUpcomingRoute
   AppIndexRoute: typeof AppIndexRoute
+  AppProjectsSlugRoute: typeof AppProjectsSlugRoute
+  AppProjectsIndexRoute: typeof AppProjectsIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppFiltersLabelsRoute: AppFiltersLabelsRoute,
   AppInboxRoute: AppInboxRoute,
-  AppProjectsRoute: AppProjectsRoute,
   AppReportingRoute: AppReportingRoute,
   AppTodayRoute: AppTodayRoute,
   AppUpcomingRoute: AppUpcomingRoute,
   AppIndexRoute: AppIndexRoute,
+  AppProjectsSlugRoute: AppProjectsSlugRoute,
+  AppProjectsIndexRoute: AppProjectsIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
