@@ -39,14 +39,16 @@ function SelectContent({
   className,
   children,
   sideOffset = 4,
+  alignItemWithTrigger,
   ...props
 }: SelectPrimitive.Popup.Props &
-  Pick<SelectPrimitive.Positioner.Props, "sideOffset">) {
+  Pick<SelectPrimitive.Positioner.Props, "sideOffset" | "alignItemWithTrigger">) {
   return (
     <SelectPrimitive.Portal>
       <SelectPrimitive.Positioner
         className="isolate z-50 outline-none"
         sideOffset={sideOffset}
+        alignItemWithTrigger={alignItemWithTrigger}
       >
         <SelectPrimitive.Popup
           data-slot="select-content"
