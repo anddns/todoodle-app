@@ -1,12 +1,12 @@
 import { PRIORITY_LEVELS, PRIORITY_META, type Priority } from '@todoodle-app/shared'
+import { FlagIcon, HashIcon, InboxIcon } from 'lucide-react'
 import { useId, useState } from 'react'
 import { projects } from '@/web/components/layout/projects-data'
 import { Button } from '@/web/components/ui/button'
-import { Checkbox } from '@/web/components/ui/checkbox'
+import { DatePicker } from '@/web/components/ui/date-picker'
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -20,9 +20,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/web/components/ui/select'
+import { Separator } from '@/web/components/ui/separator'
+import { TaskTimePicker } from '@/web/components/ui/task-time-picker'
 import { Textarea } from '@/web/components/ui/textarea'
 import { slugify } from '@/web/lib/utils'
-
 import { useCreateTask } from '../hooks/use-create-task'
 
 const INBOX_LOCATION = 'inbox'
@@ -30,6 +31,36 @@ const INBOX_LOCATION = 'inbox'
 function locationLabel(value: string | null) {
   if (!value || value === INBOX_LOCATION) return 'Inbox'
   return projects.find((project) => slugify(project.name) === value)?.name ?? value
+}
+
+function ProjectIcon({ value }: { value: string | null }) {
+  if (!value || value === INBOX_LOCATION) return <InboxIcon className="size-4" />
+  return <HashIcon className="size-4" />
+}
+
+const LOWEST_PRIORITY = PRIORITY_LEVELS[PRIORITY_LEVELS.length - 1]
+
+function PriorityFlag({ level }: { level: Priority }) {
+  const isLowest = level === LOWEST_PRIORITY
+  return (
+    <FlagIcon
+      className="size-4"
+      style={{ color: PRIORITY_META[level].color }}
+      fill={isLowest ? 'none' : PRIORITY_META[level].color}
+    />
+  )
+}
+
+function combineDateAndTime(date: Date, time: string) {
+  const [hoursText, minutesText] = time.split(':')
+  const combined = new Date(date)
+  combined.setHours(Number(hoursText ?? 0), Number(minutesText ?? 0), 0, 0)
+  return combined
+}
+
+function currentTimeString() {
+  const now = new Date()
+  return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
 }
 
 interface AddTaskDialogProps {
@@ -46,18 +77,20 @@ export function AddTaskDialog({ open, onOpenChange }: AddTaskDialogProps) {
   // Frontend-only: there is no project/task relationship in the API yet, so
   // this selection isn't sent with the create payload — see projects-data.ts.
   const [location, setLocation] = useState<string>(INBOX_LOCATION)
-  const [priority, setPriority] = useState<string>('')
+  const [priority, setPriority] = useState<string>('p4')
   const [isAllDay, setIsAllDay] = useState<boolean>(true)
-  const [dueAt, setDueAt] = useState('')
+  const [dueAt, setDueAt] = useState<Date | undefined>(new Date())
+  const [time, setTime] = useState<string>(currentTimeString())
   const [isCompleted, setIsCompleted] = useState<boolean>(false)
 
   const resetForm = () => {
     setTitle('')
     setDescription('')
     setLocation(INBOX_LOCATION)
-    setPriority('')
+    setPriority('p4')
     setIsAllDay(true)
-    setDueAt('')
+    setDueAt(new Date())
+    setTime(currentTimeString())
     setIsCompleted(false)
   }
 
@@ -71,13 +104,15 @@ export function AddTaskDialog({ open, onOpenChange }: AddTaskDialogProps) {
 
     if (!title.trim()) return
 
+    const resolvedDueAt = dueAt && !isAllDay && time ? combineDateAndTime(dueAt, time) : dueAt
+
     createTask(
       {
         title: title.trim(),
         description: description.trim() || undefined,
         priority: priority ? (priority as Priority) : undefined,
         isAllDay: isAllDay,
-        dueAt: dueAt ? new Date(dueAt).toISOString() : undefined,
+        dueAt: resolvedDueAt ? resolvedDueAt.toISOString() : undefined,
         completedAt: isCompleted ? new Date().toISOString() : undefined,
       },
       {
@@ -92,9 +127,6 @@ export function AddTaskDialog({ open, onOpenChange }: AddTaskDialogProps) {
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <DialogHeader>
             <DialogTitle>Add task</DialogTitle>
-            <DialogDescription>
-              Create a new task. It lands in the Inbox unless you pick a project below.
-            </DialogDescription>
           </DialogHeader>
 
           <div className="flex flex-col gap-1.5">
@@ -121,58 +153,86 @@ export function AddTaskDialog({ open, onOpenChange }: AddTaskDialogProps) {
 
           <div className="gap-4 grid grid-cols-2">
             <div className="flex flex-col gap-1.5">
-              <Label>Location</Label>
-              <Select
-                value={location}
-                onValueChange={(value) => setLocation(value ?? INBOX_LOCATION)}
-              >
-                <SelectTrigger>
-                  <SelectValue>{locationLabel}</SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value={INBOX_LOCATION}>Inbox</SelectItem>
-                  {projects.map(({ name }) => (
-                    <SelectItem key={name} value={slugify(name)}>
-                      {name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Label htmlFor={`${formId}-due-at`}>Date</Label>
+              <DatePicker id={`${formId}-due-at`} value={dueAt} onChange={setDueAt} />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor={`${formId}-time`}>Time</Label>
+              <TaskTimePicker
+                id={`${formId}-time`}
+                time={time}
+                onTimeChange={setTime}
+                isAllDay={isAllDay}
+                onAllDayChange={setIsAllDay}
+              />
             </div>
 
             <div className="flex flex-col gap-1.5">
               <Label>Priority</Label>
-              <Select value={priority} onValueChange={(value) => setPriority(value ?? '')}>
+              <Select value={priority} onValueChange={(value) => setPriority(value ?? 'p4')}>
                 <SelectTrigger>
-                  <SelectValue placeholder="None" />
+                  <SelectValue>
+                    {(value: string) => {
+                      const level = value as Priority
+                      const meta = PRIORITY_META[level]
+                      if (!meta) return null
+                      return (
+                        <span className="flex items-center gap-2">
+                          <PriorityFlag level={level} />
+                          {meta.label}
+                        </span>
+                      )
+                    }}
+                  </SelectValue>
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent alignItemWithTrigger={false}>
                   {PRIORITY_LEVELS.map((level) => (
                     <SelectItem key={level} value={level}>
-                      {PRIORITY_META[level].label}
+                      <span className="flex items-center gap-2">
+                        <PriorityFlag level={level} />
+                        {PRIORITY_META[level].label}
+                      </span>
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
-          </div>
 
-          <div className="gap-4 grid grid-cols-2">
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor={`${formId}-due-at`}>Due at</Label>
-              <Input
-                id={`${formId}-due-at`}
-                type="datetime-local"
-                value={dueAt}
-                onChange={(event) => setDueAt(event.target.value)}
-              />
-            </div>
-
-            <div className="flex flex-col justify-center gap-1.5">
-              <Label className="mt-4.75 w-fit">
-                <Checkbox checked={isAllDay} onCheckedChange={setIsAllDay} />
-                All day task
-              </Label>
+              <Label htmlFor={`${formId}-project`}>Project</Label>
+              <Select
+                value={location}
+                onValueChange={(value) => setLocation(value ?? INBOX_LOCATION)}
+              >
+                <SelectTrigger id={`${formId}-project`}>
+                  <SelectValue>
+                    {(value: string | null) => (
+                      <span className="flex items-center gap-2">
+                        <ProjectIcon value={value} />
+                        {locationLabel(value)}
+                      </span>
+                    )}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent alignItemWithTrigger={false}>
+                  <SelectItem value={INBOX_LOCATION}>
+                    <span className="flex items-center gap-2">
+                      <InboxIcon className="size-4" />
+                      Inbox
+                    </span>
+                  </SelectItem>
+                  <Separator />
+                  {projects.map(({ name }) => (
+                    <SelectItem key={name} value={slugify(name)}>
+                      <span className="flex items-center gap-2">
+                        <HashIcon className="size-4" />
+                        {name}
+                      </span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
@@ -180,8 +240,10 @@ export function AddTaskDialog({ open, onOpenChange }: AddTaskDialogProps) {
             <p className="text-destructive text-sm">Failed to create task: {error.message}</p>
           )}
 
+          <Separator />
+
           <DialogFooter>
-            <Button type="button" variant="ghost" onClick={() => handleOpenChange(false)}>
+            <Button type="button" variant="secondary" onClick={() => handleOpenChange(false)}>
               Cancel
             </Button>
             <Button type="submit" disabled={isPending || !title.trim()}>
