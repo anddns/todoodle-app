@@ -1,3 +1,5 @@
 export * from './priority'
+export * from './projects/color'
+export * from './projects/schema'
 export * from './tasks/schema'
 export * from './users/schema'

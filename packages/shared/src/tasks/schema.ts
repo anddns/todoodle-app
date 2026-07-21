@@ -8,6 +8,7 @@ export const createTaskSchema = z.object({
   isAllDay: z.boolean().optional(),
   dueAt: z.iso.datetime().optional(),
   completedAt: z.iso.datetime().optional(),
+  projectId: z.uuidv7().optional().nullable(),
 })
 
 export const updateTaskSchema = z
@@ -18,6 +19,7 @@ export const updateTaskSchema = z
     isAllDay: z.boolean().optional(),
     dueAt: z.iso.datetime().optional().nullable(),
     completedAt: z.iso.datetime().optional().nullable(),
+    projectId: z.uuidv7().optional().nullable(),
   })
   .refine((data) => Object.values(data).some((value) => value !== undefined), {
     error: 'At least one of the properties must be provided.',
