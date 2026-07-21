@@ -4,6 +4,10 @@ node_modules
 .claude
 .mcp.json
 
+# Skills (installed skill artifacts and lock file)
+skills/
+skills-lock.json
+
 # VS Code Personal Settings
 .vscode/settings.json
 # Ignore VS Code local history/state
