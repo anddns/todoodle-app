@@ -1,5 +1,5 @@
 import { PRIORITY_LEVELS, PRIORITY_META, type Priority } from '@todoodle-app/shared'
-import { FlagIcon } from 'lucide-react'
+import { FlagIcon, HashIcon, InboxIcon } from 'lucide-react'
 import { useEffect, useId, useState } from 'react'
 import { Button } from '@/web/components/ui/button'
 import { DatePicker } from '@/web/components/ui/date-picker'
@@ -22,8 +22,16 @@ import {
 import { Separator } from '@/web/components/ui/separator'
 import { TaskTimePicker } from '@/web/components/ui/task-time-picker'
 import { Textarea } from '@/web/components/ui/textarea'
+import { useProjects } from '@/web/features/projects'
 import { useUpdateTask } from '../hooks/use-update-task'
 import type { Task } from '../types'
+
+const INBOX_LOCATION = 'inbox'
+
+function ProjectIcon({ value }: { value: string | null }) {
+  if (!value || value === INBOX_LOCATION) return <InboxIcon className="size-4" />
+  return <HashIcon className="size-4" />
+}
 
 const LOWEST_PRIORITY = PRIORITY_LEVELS[PRIORITY_LEVELS.length - 1]
 
@@ -58,6 +66,8 @@ interface EditTaskDialogProps {
 export function EditTaskDialog({ task, open, onOpenChange }: EditTaskDialogProps) {
   const formId = useId()
   const { mutate: updateTask, isPending, isError, error } = useUpdateTask()
+  const { data: projectsData } = useProjects()
+  const projects = projectsData?.projects ?? []
 
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
@@ -65,6 +75,7 @@ export function EditTaskDialog({ task, open, onOpenChange }: EditTaskDialogProps
   const [isAllDay, setIsAllDay] = useState<boolean>(true)
   const [dueAt, setDueAt] = useState<Date | undefined>(undefined)
   const [time, setTime] = useState<string>('09:00')
+  const [location, setLocation] = useState<string>(INBOX_LOCATION)
 
   // Re-hydrate the form from the task whenever the dialog opens, so edits always
   // start from the task's current values (and discarded edits don't persist).
@@ -79,6 +90,7 @@ export function EditTaskDialog({ task, open, onOpenChange }: EditTaskDialogProps
     setIsAllDay(task.isAllDay ?? true)
     setDueAt(taskDueAt)
     setTime(taskDueAt ? timeStringFromDate(taskDueAt) : '09:00')
+    setLocation(task.projectId ?? INBOX_LOCATION)
   }, [open, task])
 
   const handleDueAtChange = (nextDueAt: Date | undefined) => {
@@ -102,6 +114,7 @@ export function EditTaskDialog({ task, open, onOpenChange }: EditTaskDialogProps
           priority: priority ? (priority as Priority) : undefined,
           isAllDay: isAllDay,
           dueAt: resolvedDueAt ? resolvedDueAt.toISOString() : undefined,
+          projectId: location === INBOX_LOCATION ? null : location,
         },
       },
       {
@@ -182,6 +195,48 @@ export function EditTaskDialog({ task, open, onOpenChange }: EditTaskDialogProps
                       <span className="flex items-center gap-2">
                         <PriorityFlag level={level} />
                         {PRIORITY_META[level].label}
+                      </span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor={`${formId}-project`}>Project</Label>
+              <Select
+                value={location}
+                onValueChange={(value) => setLocation(value ?? INBOX_LOCATION)}
+              >
+                <SelectTrigger id={`${formId}-project`}>
+                  <SelectValue>
+                    {(value: string | null) => (
+                      <span className="flex items-center gap-2">
+                        <ProjectIcon value={value} />
+                        {value === INBOX_LOCATION || !value
+                          ? 'Inbox'
+                          : (projects.find((project) => project.id === value)?.name ?? 'Inbox')}
+                      </span>
+                    )}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent alignItemWithTrigger={false}>
+                  <SelectItem value={INBOX_LOCATION}>
+                    <span className="flex items-center gap-2">
+                      <InboxIcon className="size-4" />
+                      Inbox
+                    </span>
+                  </SelectItem>
+                  <Separator />
+                  {projects.map((project) => (
+                    <SelectItem key={project.id} value={project.id}>
+                      <span className="flex items-center gap-2">
+                        <span
+                          aria-hidden
+                          className="size-3 rounded-full"
+                          style={{ backgroundColor: project.color }}
+                        />
+                        {project.name}
                       </span>
                     </SelectItem>
                   ))}

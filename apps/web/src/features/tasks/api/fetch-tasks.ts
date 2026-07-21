@@ -1,6 +1,10 @@
 import { eden } from '@/web/lib/eden'
 
-export const fetchTasks = async () => {
+interface FetchTasksParams {
+  projectId?: string
+}
+
+export const fetchTasks = async ({ projectId }: FetchTasksParams = {}) => {
   const { data, error } = await eden.api.v1.tasks.get({
     query: {
       status: 'all',
@@ -8,6 +12,7 @@ export const fetchTasks = async () => {
       sortOrder: 'desc',
       limit: 20,
       offset: 0,
+      ...(projectId ? { projectId } : {}),
     },
   })
 

@@ -1,7 +1,6 @@
 import { PRIORITY_LEVELS, PRIORITY_META, type Priority } from '@todoodle-app/shared'
 import { FlagIcon, HashIcon, InboxIcon } from 'lucide-react'
 import { useId, useState } from 'react'
-import { projects } from '@/web/components/layout/projects-data'
 import { Button } from '@/web/components/ui/button'
 import { DatePicker } from '@/web/components/ui/date-picker'
 import {
@@ -23,15 +22,10 @@ import {
 import { Separator } from '@/web/components/ui/separator'
 import { TaskTimePicker } from '@/web/components/ui/task-time-picker'
 import { Textarea } from '@/web/components/ui/textarea'
-import { slugify } from '@/web/lib/utils'
+import { useProjects } from '@/web/features/projects'
 import { useCreateTask } from '../hooks/use-create-task'
 
 const INBOX_LOCATION = 'inbox'
-
-function locationLabel(value: string | null) {
-  if (!value || value === INBOX_LOCATION) return 'Inbox'
-  return projects.find((project) => slugify(project.name) === value)?.name ?? value
-}
 
 function ProjectIcon({ value }: { value: string | null }) {
   if (!value || value === INBOX_LOCATION) return <InboxIcon className="size-4" />
@@ -71,11 +65,11 @@ interface AddTaskDialogProps {
 export function AddTaskDialog({ open, onOpenChange }: AddTaskDialogProps) {
   const formId = useId()
   const { mutate: createTask, isPending, isError, error } = useCreateTask()
+  const { data: projectsData } = useProjects()
+  const projects = projectsData?.projects ?? []
 
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
-  // Frontend-only: there is no project/task relationship in the API yet, so
-  // this selection isn't sent with the create payload — see projects-data.ts.
   const [location, setLocation] = useState<string>(INBOX_LOCATION)
   const [priority, setPriority] = useState<string>('p4')
   const [isAllDay, setIsAllDay] = useState<boolean>(true)
@@ -119,6 +113,7 @@ export function AddTaskDialog({ open, onOpenChange }: AddTaskDialogProps) {
         isAllDay: isAllDay,
         dueAt: resolvedDueAt ? resolvedDueAt.toISOString() : undefined,
         completedAt: isCompleted ? new Date().toISOString() : undefined,
+        projectId: location === INBOX_LOCATION ? undefined : location,
       },
       {
         onSuccess: () => handleOpenChange(false),
@@ -216,7 +211,9 @@ export function AddTaskDialog({ open, onOpenChange }: AddTaskDialogProps) {
                     {(value: string | null) => (
                       <span className="flex items-center gap-2">
                         <ProjectIcon value={value} />
-                        {locationLabel(value)}
+                        {value === INBOX_LOCATION || !value
+                          ? 'Inbox'
+                          : (projects.find((project) => project.id === value)?.name ?? 'Inbox')}
                       </span>
                     )}
                   </SelectValue>
@@ -229,11 +226,15 @@ export function AddTaskDialog({ open, onOpenChange }: AddTaskDialogProps) {
                     </span>
                   </SelectItem>
                   <Separator />
-                  {projects.map(({ name }) => (
-                    <SelectItem key={name} value={slugify(name)}>
+                  {projects.map((project) => (
+                    <SelectItem key={project.id} value={project.id}>
                       <span className="flex items-center gap-2">
-                        <HashIcon className="size-4" />
-                        {name}
+                        <span
+                          aria-hidden
+                          className="size-3 rounded-full"
+                          style={{ backgroundColor: project.color }}
+                        />
+                        {project.name}
                       </span>
                     </SelectItem>
                   ))}

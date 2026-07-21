@@ -1,3 +1,4 @@
+import { Link, useLocation } from '@tanstack/react-router'
 import {
   ChevronDownIcon,
   CircleArrowRightIcon,
@@ -12,7 +13,6 @@ import {
   Trash2Icon,
   UserRoundPlus,
 } from 'lucide-react'
-import { Link, useLocation } from '@tanstack/react-router'
 
 import {
   Collapsible,
@@ -36,7 +36,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/web/components/ui/sidebar'
-import { cn, slugify } from '@/web/lib/utils'
+import { cn } from '@/web/lib/utils'
 
 /**
  * Revealed on header hover (and whenever focus is inside the header, so the
@@ -92,22 +92,19 @@ export function NavFavorites() {
         <CollapsibleContent className="h-(--collapsible-panel-height) overflow-hidden transition-[height] duration-200 ease-out data-ending-style:h-0 data-starting-style:h-0">
           <SidebarMenu>
             {favorites.map(({ name }) => {
-              const slug = slugify(name)
-              const projectPath = `/app/projects/${slug}`
-
               return (
                 <SidebarMenuItem key={name}>
                   {/*
-                    Favorites items link to the same project page as their My
-                    Projects counterpart — both lists reference the same
-                    underlying placeholder items, so selecting either one
-                    navigates to and highlights the same page.
+                    Placeholder favorites aren't backed by real project ids
+                    (see the comment above `favorites`), so they link to the
+                    Projects index rather than a fabricated per-item detail
+                    route until favorites become a real, linkable entity.
                   */}
                   <SidebarMenuButton
                     className="items-center gap-2"
                     tooltip={name}
-                    isActive={pathname === projectPath}
-                    render={<Link to="/app/projects/$slug" params={{ slug }} />}
+                    isActive={pathname === '/app/projects'}
+                    render={<Link to="/app/projects" />}
                   >
                     <div className="place-items-center grid size-6">
                       <HashIcon strokeWidth={1} className="col-start-1 row-start-1 size-4" />
