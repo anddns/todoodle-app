@@ -1,3 +1,6 @@
+export { EditTaskDialog } from './components/edit-task-dialog'
+export { TaskItem } from './components/task-item'
+export { TaskList } from './components/task-list'
 export { useCreateTask } from './hooks/use-create-task'
 export { useDeleteTask } from './hooks/use-delete-task'
 export { taskQueryOptions, useTask } from './hooks/use-task'
