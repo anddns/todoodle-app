@@ -79,7 +79,7 @@ export function AddTaskDialog({ open, onOpenChange }: AddTaskDialogProps) {
   const [location, setLocation] = useState<string>(INBOX_LOCATION)
   const [priority, setPriority] = useState<string>('p4')
   const [isAllDay, setIsAllDay] = useState<boolean>(true)
-  const [dueAt, setDueAt] = useState<Date | undefined>(new Date())
+  const [dueAt, setDueAt] = useState<Date | undefined>(undefined)
   const [time, setTime] = useState<string>(currentTimeString())
   const [isCompleted, setIsCompleted] = useState<boolean>(false)
 
@@ -89,7 +89,7 @@ export function AddTaskDialog({ open, onOpenChange }: AddTaskDialogProps) {
     setLocation(INBOX_LOCATION)
     setPriority('p4')
     setIsAllDay(true)
-    setDueAt(new Date())
+    setDueAt(undefined)
     setTime(currentTimeString())
     setIsCompleted(false)
   }
@@ -97,6 +97,11 @@ export function AddTaskDialog({ open, onOpenChange }: AddTaskDialogProps) {
   const handleOpenChange = (nextOpen: boolean) => {
     onOpenChange(nextOpen)
     if (!nextOpen) resetForm()
+  }
+
+  const handleDueAtChange = (nextDueAt: Date | undefined) => {
+    setDueAt(nextDueAt)
+    if (!nextDueAt) setIsAllDay(true)
   }
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -130,7 +135,7 @@ export function AddTaskDialog({ open, onOpenChange }: AddTaskDialogProps) {
           </DialogHeader>
 
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor={`${formId}-title`}>Title</Label>
+            <Label htmlFor={`${formId}-title`}>Name</Label>
             <Input
               id={`${formId}-title`}
               value={title}
@@ -147,14 +152,14 @@ export function AddTaskDialog({ open, onOpenChange }: AddTaskDialogProps) {
               id={`${formId}-description`}
               value={description}
               onChange={(event) => setDescription(event.target.value)}
-              placeholder="Add more detail (optional)"
+              placeholder="Add details, notes, or sub-steps..."
             />
           </div>
 
           <div className="gap-4 grid grid-cols-2">
             <div className="flex flex-col gap-1.5">
               <Label htmlFor={`${formId}-due-at`}>Date</Label>
-              <DatePicker id={`${formId}-due-at`} value={dueAt} onChange={setDueAt} />
+              <DatePicker id={`${formId}-due-at`} value={dueAt} onChange={handleDueAtChange} />
             </div>
 
             <div className="flex flex-col gap-1.5">
@@ -165,6 +170,7 @@ export function AddTaskDialog({ open, onOpenChange }: AddTaskDialogProps) {
                 onTimeChange={setTime}
                 isAllDay={isAllDay}
                 onAllDayChange={setIsAllDay}
+                disabled={!dueAt}
               />
             </div>
 
