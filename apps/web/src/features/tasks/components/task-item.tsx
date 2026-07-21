@@ -63,7 +63,7 @@ export function TaskItem({ task }: TaskItemProps) {
   return (
     <>
       <Item
-        variant="outline"
+        variant="default"
         role="button"
         tabIndex={0}
         onClick={() => setIsEditDialogOpen(true)}
@@ -74,7 +74,7 @@ export function TaskItem({ task }: TaskItemProps) {
           }
         }}
         className={cn(
-          'cursor-pointer transition-colors hover:bg-muted/50 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50',
+          'group/task-item cursor-pointer focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50',
           isDeleting && 'opacity-50',
         )}
       >
@@ -108,7 +108,10 @@ export function TaskItem({ task }: TaskItemProps) {
           )}
         </ItemContent>
 
-        <ItemActions onClick={(event) => event.stopPropagation()}>
+        <ItemActions
+          onClick={(event) => event.stopPropagation()}
+          className="opacity-0 transition-opacity group-hover/task-item:opacity-100"
+        >
           <Button
             type="button"
             variant="ghost"
