@@ -1,5 +1,5 @@
 import type { CreateTaskInput, UpdateTaskInput } from '@todoodle-app/shared'
-import { asc, count, desc, eq, isNotNull, isNull } from 'drizzle-orm'
+import { and, asc, count, desc, eq, isNotNull, isNull } from 'drizzle-orm'
 
 import type { ListTasksQuery, Task } from '@/api/modules/tasks/task.schemas'
 import type { DrizzleDatabase } from '@/api/shared/database'
@@ -19,14 +19,21 @@ export class TaskRepository implements ITaskRepository {
   public constructor(private readonly database: DrizzleDatabase) {}
 
   async findAll(query: ListTasksQuery): Promise<{ tasks: Task[]; total: number }> {
-    const { status, sortBy, sortOrder, limit, offset } = query
+    const { status, sortBy, sortOrder, limit, offset, projectId } = query
 
-    const whereClause =
+    const statusCondition =
       status === 'pending'
         ? isNull(tasksTable.completedAt)
         : status === 'completed'
           ? isNotNull(tasksTable.completedAt)
           : undefined
+
+    const projectCondition = projectId ? eq(tasksTable.projectId, projectId) : undefined
+
+    const whereClause =
+      statusCondition && projectCondition
+        ? and(statusCondition, projectCondition)
+        : (statusCondition ?? projectCondition)
 
     const orderColumn = sortBy === 'title' ? tasksTable.title : tasksTable.createdAt
 

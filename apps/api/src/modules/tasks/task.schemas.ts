@@ -11,6 +11,7 @@ export const taskSchema = z.object({
   isAllday: z.boolean().optional(),
   dueAt: z.iso.datetime().optional(),
   completedAt: z.iso.datetime().nullable(),
+  projectId: z.uuidv7().nullable().optional(),
   updatedAt: z.iso.datetime(),
   createdAt: z.iso.datetime(),
 })
@@ -25,6 +26,7 @@ export const listTasksQuerySchema = z.object({
   sortOrder: z.enum(['asc', 'desc']).default('desc'),
   limit: z.coerce.number().int().min(1).max(100).default(20),
   offset: z.coerce.number().int().min(0).default(0),
+  projectId: z.uuidv7().optional(),
 })
 
 export type Task = typeof tasksTable.$inferSelect
