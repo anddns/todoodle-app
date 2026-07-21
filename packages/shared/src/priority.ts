@@ -5,8 +5,8 @@ export const prioritySchema = z.enum(PRIORITY_LEVELS)
 export type Priority = z.infer<typeof prioritySchema>
 
 export const PRIORITY_META: Record<Priority, { label: string; color: string }> = {
-  p1: { label: 'Urgent', color: '#E53E3E' },
-  p2: { label: 'High', color: '#DD6B20' },
-  p3: { label: 'Medium', color: '#3182CE' },
-  p4: { label: 'Low', color: '#090b0c' },
+  p1: { label: 'Urgent', color: '#DC4C3E' },
+  p2: { label: 'High', color: '#EB8909' },
+  p3: { label: 'Medium', color: '#246FE0' },
+  p4: { label: 'Low', color: '#666666' },
 }
