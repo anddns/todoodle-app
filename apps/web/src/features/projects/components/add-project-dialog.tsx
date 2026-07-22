@@ -18,6 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/web/components/ui/select'
+import { Textarea } from '@/web/components/ui/textarea'
 import { useCreateProject } from '../hooks/use-create-project'
 
 interface AddProjectDialogProps {
@@ -30,10 +31,12 @@ export function AddProjectDialog({ open, onOpenChange }: AddProjectDialogProps) 
   const { mutate: createProject, isPending, isError, error } = useCreateProject()
 
   const [name, setName] = useState('')
+  const [description, setDescription] = useState('')
   const [color, setColor] = useState<string>(DEFAULT_PROJECT_COLOR)
 
   const resetForm = () => {
     setName('')
+    setDescription('')
     setColor(DEFAULT_PROJECT_COLOR)
   }
 
@@ -48,7 +51,11 @@ export function AddProjectDialog({ open, onOpenChange }: AddProjectDialogProps) 
     if (!name.trim()) return
 
     createProject(
-      { name: name.trim(), color: color as (typeof PROJECT_COLORS)[number] },
+      {
+        name: name.trim(),
+        description: description.trim() || undefined,
+        color: color as (typeof PROJECT_COLORS)[number],
+      },
       { onSuccess: () => handleOpenChange(false) },
     )
   }
@@ -70,6 +77,16 @@ export function AddProjectDialog({ open, onOpenChange }: AddProjectDialogProps) 
               placeholder="Project name"
               autoFocus
               required
+            />
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor={`${formId}-description`}>Description</Label>
+            <Textarea
+              id={`${formId}-description`}
+              value={description}
+              onChange={(event) => setDescription(event.target.value)}
+              placeholder="Add details or notes..."
             />
           </div>
 

@@ -8,27 +8,29 @@ import { TaskItem } from './task-item'
 
 interface TaskListProps {
   tasks: Task[]
+  projectId?: string
+  showAddTaskRow?: boolean
 }
 
-export function TaskList({ tasks }: TaskListProps) {
+export function TaskList({ tasks, projectId, showAddTaskRow = true }: TaskListProps) {
   return (
-    <ItemGroup className="gap-1">
+    <ItemGroup className="-mx-4 gap-1">
       {tasks.map((task) => (
         <TaskItem key={task.id} task={task} />
       ))}
 
-      <AddTaskRow />
+      {showAddTaskRow && <AddTaskRow projectId={projectId} />}
     </ItemGroup>
   )
 }
 
-function AddTaskRow({ className }: { className?: string }) {
+function AddTaskRow({ className, projectId }: { className?: string; projectId?: string }) {
   const { openAddTaskDialog } = useAddTaskDialog()
 
   return (
     <button
       type="button"
-      onClick={openAddTaskDialog}
+      onClick={() => openAddTaskDialog(projectId)}
       className={cn(
         'group/add-task relative z-0 flex w-full cursor-pointer items-center gap-3 rounded-md px-4 py-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:z-10 hover:text-primary focus-visible:z-10 focus-visible:ring-3 focus-visible:ring-ring/50',
         className,

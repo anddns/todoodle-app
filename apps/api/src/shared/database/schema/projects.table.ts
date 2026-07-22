@@ -7,6 +7,7 @@ export const projectColorEnum = pgEnum('project_color', PROJECT_COLORS)
 export const projectsTable = snakeCase.table('projects', {
   id: uuid('id').primaryKey().default(sql`uuidv7()`),
   name: text('name').notNull(),
+  description: text('description'),
   color: projectColorEnum('color').default('#246FE0').notNull(),
   updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true })
     .defaultNow()

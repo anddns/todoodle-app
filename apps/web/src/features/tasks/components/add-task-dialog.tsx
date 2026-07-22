@@ -1,6 +1,6 @@
 import { PRIORITY_LEVELS, PRIORITY_META, type Priority } from '@todoodle-app/shared'
 import { FlagIcon, HashIcon, InboxIcon } from 'lucide-react'
-import { useId, useState } from 'react'
+import { useEffect, useId, useState } from 'react'
 import { Button } from '@/web/components/ui/button'
 import { DatePicker } from '@/web/components/ui/date-picker'
 import {
@@ -60,9 +60,10 @@ function currentTimeString() {
 interface AddTaskDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
+  defaultProjectId?: string
 }
 
-export function AddTaskDialog({ open, onOpenChange }: AddTaskDialogProps) {
+export function AddTaskDialog({ open, onOpenChange, defaultProjectId }: AddTaskDialogProps) {
   const formId = useId()
   const { mutate: createTask, isPending, isError, error } = useCreateTask()
   const { data: projectsData } = useProjects()
@@ -70,7 +71,7 @@ export function AddTaskDialog({ open, onOpenChange }: AddTaskDialogProps) {
 
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
-  const [location, setLocation] = useState<string>(INBOX_LOCATION)
+  const [location, setLocation] = useState<string>(defaultProjectId ?? INBOX_LOCATION)
   const [priority, setPriority] = useState<string>('p4')
   const [isAllDay, setIsAllDay] = useState<boolean>(true)
   const [dueAt, setDueAt] = useState<Date | undefined>(undefined)
@@ -80,13 +81,17 @@ export function AddTaskDialog({ open, onOpenChange }: AddTaskDialogProps) {
   const resetForm = () => {
     setTitle('')
     setDescription('')
-    setLocation(INBOX_LOCATION)
+    setLocation(defaultProjectId ?? INBOX_LOCATION)
     setPriority('p4')
     setIsAllDay(true)
     setDueAt(undefined)
     setTime(currentTimeString())
     setIsCompleted(false)
   }
+
+  useEffect(() => {
+    if (open) setLocation(defaultProjectId ?? INBOX_LOCATION)
+  }, [open, defaultProjectId])
 
   const handleOpenChange = (nextOpen: boolean) => {
     onOpenChange(nextOpen)

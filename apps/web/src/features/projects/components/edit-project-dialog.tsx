@@ -18,6 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/web/components/ui/select'
+import { Textarea } from '@/web/components/ui/textarea'
 import { useUpdateProject } from '../hooks/use-update-project'
 import type { Project } from '../types'
 
@@ -32,6 +33,7 @@ export function EditProjectDialog({ project, open, onOpenChange }: EditProjectDi
   const { mutate: updateProject, isPending, isError, error } = useUpdateProject()
 
   const [name, setName] = useState('')
+  const [description, setDescription] = useState('')
   const [color, setColor] = useState<string>(project.color)
 
   // Re-hydrate the form from the project whenever the dialog opens, so edits
@@ -40,6 +42,7 @@ export function EditProjectDialog({ project, open, onOpenChange }: EditProjectDi
     if (!open) return
 
     setName(project.name)
+    setDescription(project.description ?? '')
     setColor(project.color)
   }, [open, project])
 
@@ -51,7 +54,11 @@ export function EditProjectDialog({ project, open, onOpenChange }: EditProjectDi
     updateProject(
       {
         id: project.id,
-        payload: { name: name.trim(), color: color as (typeof PROJECT_COLORS)[number] },
+        payload: {
+          name: name.trim(),
+          description: description.trim() || undefined,
+          color: color as (typeof PROJECT_COLORS)[number],
+        },
       },
       { onSuccess: () => onOpenChange(false) },
     )
@@ -74,6 +81,16 @@ export function EditProjectDialog({ project, open, onOpenChange }: EditProjectDi
               placeholder="Project name"
               autoFocus
               required
+            />
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor={`${formId}-description`}>Description</Label>
+            <Textarea
+              id={`${formId}-description`}
+              value={description}
+              onChange={(event) => setDescription(event.target.value)}
+              placeholder="Add details or notes..."
             />
           </div>
 

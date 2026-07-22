@@ -32,16 +32,8 @@ function RouteComponent() {
   }
 
   return (
-    <PageContainer title={title}>
-      {tasks.length > 0 ? (
-        <TaskList tasks={tasks} />
-      ) : (
-        <EmptyState
-          icon={HashIcon}
-          heading="No tasks yet"
-          description={`Tasks added to ${title} will show up here.`}
-        />
-      )}
+    <PageContainer title={title} description={project?.description ?? undefined}>
+      <TaskList tasks={tasks} projectId={id} />
     </PageContainer>
   )
 }
